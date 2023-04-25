@@ -1,34 +1,23 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/room.dto';
+import { AddUserToRoomDto } from './dto/add-user-to-room.dto';
 
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(createRoomDto);
+  async createRoom(@Body() createRoomDto: CreateRoomDto) {
+    return await this.roomService.create(createRoomDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.roomService.findAll();
-  // }
+  @Post(':roomId/addUser')
+  async addUserToRoom(
+    @Param('roomId') roomId: string, 
+    @Body() addUserToRoomDto: AddUserToRoomDto)
+  {
+    return await this.roomService.addUserToRoom(roomId, addUserToRoomDto);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.roomService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-  //   return this.roomService.update(+id, updateRoomDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.roomService.remove(+id);
-  // }
 }
