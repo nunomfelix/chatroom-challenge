@@ -9,7 +9,7 @@ export class RoomController {
 
   @Post()
   async createRoom(@Body() createRoomDto: CreateRoomDto) {
-    return await this.roomService.create(createRoomDto);
+    return await this.roomService.createRoom(createRoomDto);
   }
 
   @Post(':roomId/addUser')

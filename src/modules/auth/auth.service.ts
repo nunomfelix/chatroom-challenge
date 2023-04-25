@@ -10,12 +10,11 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    // Replace this with your logic to validate the user's credentials
-    const user = await this.userService.validateUser(username, password);
-    if (user) {
-      return user;
-    }
-    return null;
+    // const user = await this.userService.validateUser(username, password);
+    // if (user) {
+    //   return user;
+    // }
+    // return null;
   }
 
   async login(user: any) {

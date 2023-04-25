@@ -24,8 +24,8 @@ export class RoomService {
     roomId: string,
     addUserToRoomDto: AddUserToRoomDto,
   ): Promise<Room> {
-    const room = await this.roomRepository.findOne(roomId, { relations: ['users'] });
-    const user = await this.userRepository.findOne(addUserToRoomDto.userId);
+    const room = await this.roomRepository.findOne({ where: { id: roomId }, relations: ['users'] });
+    const user = await this.userRepository.findOne({ where: { id: addUserToRoomDto.userId}});
 
     if (!room || !user) {
       throw new NotFoundException('Room or User not found');
