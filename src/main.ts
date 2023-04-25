@@ -13,6 +13,8 @@ import {
   ExpressAdapter,
 } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { SharedModule } from './shared/shared.module';
+import { ApiConfigService } from './shared/services/api-config.service';
 
 async function bootstrap(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -42,6 +44,8 @@ async function bootstrap(): Promise<NestExpressApplication> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   app.use(expressCtx);
+
+  const configService = app.select(SharedModule).get(ApiConfigService);
 
   console.info(`server running on ${await app.getUrl()}`);
   await app.listen(3000);

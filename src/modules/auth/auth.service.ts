@@ -1,27 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../user/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private userService: UserService,
+    private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
-    // const user = await this.userService.validateUser(username, password);
-    // if (user) {
-    //   return user;
-    // }
-    // return null;
+  async validateUser(username: string, password: string): Promise<User | null> {
+    const user = await this.userService.findByUsername(username);
+    if (user && (await this.comparePasswords(password, user.password))) {
+      return user;
+    }
+    return null;
   }
 
-  async login(user: any) {
-    // Generate a JWT token for the authenticated user
-    const payload = { username: user.username, sub: user.userId };
+  async validateUserById(userId: string): Promise<User | null> {
+    const user = await this.userService.findById(userId);
+    if (user) {
+      return user;
+    }
+    return null;
+  }
+
+  async login(user: User) {
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  private async comparePasswords(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
   }
 }
