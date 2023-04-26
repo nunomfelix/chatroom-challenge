@@ -24,15 +24,15 @@ async function bootstrap(): Promise<NestExpressApplication> {
   );
   app.use(helmet());
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      transform: true,
-      dismissDefaultMessages: true,
-      exceptionFactory: (errors) => new UnprocessableEntityException(errors),
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  //     transform: true,
+  //     dismissDefaultMessages: true,
+  //     exceptionFactory: (errors) => new UnprocessableEntityException(errors),
+  //   }),
+  // );
 
   const config = new DocumentBuilder()
     .setTitle('Colkie Chatroom')
@@ -47,8 +47,8 @@ async function bootstrap(): Promise<NestExpressApplication> {
 
   const configService = app.select(SharedModule).get(ApiConfigService);
 
-  console.info(`server running on ${await app.getUrl()}`);
   await app.listen(3000);
+  console.info(`server running on ${await app.getUrl()}`);
 
   return app;
 }

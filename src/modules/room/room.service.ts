@@ -24,7 +24,7 @@ export class RoomService {
     roomId: string,
     addUserToRoomDto: AddUserToRoomDto,
   ): Promise<Room> {
-    const room = await this.roomRepository.findOne({ where: { id: roomId }, relations: ['users'] });
+    const room = await this.roomRepository.findOne({ where: { id: roomId }});
     const user = await this.userRepository.findOne({ where: { id: addUserToRoomDto.userId}});
 
     if (!room || !user) {

@@ -11,33 +11,33 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.userService.findByUsername(username);
-    if (user && (await this.comparePasswords(password, user.password))) {
-      return user;
-    }
-    return null;
-  }
+  // async validateUser(username: string, password: string): Promise<User | null> {
+  //   const user = await this.userService.findByUsername(username);
+  //   if (user && (await this.comparePasswords(password, user.password))) {
+  //     return user;
+  //   }
+  //   return null;
+  // }
 
-  async validateUserById(userId: string): Promise<User | null> {
-    const user = await this.userService.findById(userId);
-    if (user) {
-      return user;
-    }
-    return null;
-  }
+  // async validateUserById(userId: string): Promise<User | null> {
+  //   const user = await this.userService.findById(userId);
+  //   if (user) {
+  //     return user;
+  //   }
+  //   return null;
+  // }
 
-  async login(user: User) {
-    const payload = { username: user.username, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+  // async login(user: User) {
+  //   const payload = { username: user.username, sub: user.id };
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //   };
+  // }
 
-  private async comparePasswords(
-    plainPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return await bcrypt.compare(plainPassword, hashedPassword);
-  }
+  // private async comparePasswords(
+  //   plainPassword: string,
+  //   hashedPassword: string,
+  // ): Promise<boolean> {
+  //   return await bcrypt.compare(plainPassword, hashedPassword);
+  // }
 }

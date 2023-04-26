@@ -51,8 +51,7 @@ export class ApiConfigService {
   
   get postgresConfig(): TypeOrmModuleOptions {
     const entities = [
-      __dirname + '/../../modules/**/*.entity{.ts,.js}',
-      __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
+      __dirname + '/../../modules/**/entities/*.entity{.ts,.js}'
     ];
     const migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
 
@@ -69,6 +68,7 @@ export class ApiConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       migrationsRun: true,
+      synchronize: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
     };
   }
