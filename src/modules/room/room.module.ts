@@ -12,5 +12,6 @@ import { Message } from '../message/entities/message.entity';
   ],
   controllers: [RoomController],
   providers: [RoomService],
+  exports: [RoomService]
 })
 export class RoomModule {}

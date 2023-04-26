@@ -5,6 +5,7 @@ import { Room } from './entities/room.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { AddUserToRoomDto } from './dto/add-user-to-room.dto';
+import { UserNotFoundException, RoomNotFoundException } from '../../core/exceptions';
 
 @Injectable()
 export class RoomService {
@@ -21,23 +22,31 @@ export class RoomService {
   }
 
   async addUserToRoom(
-    roomId: string,
+    roomName: string,
     addUserToRoomDto: AddUserToRoomDto,
   ): Promise<Room> {
-    const room = await this.roomRepository.findOne({ where: { id: roomId }});
-    const user = await this.userRepository.findOne({ where: { id: addUserToRoomDto.userId}});
+    const room = await this.roomRepository.findOne({ where: { name: roomName }, relations: ['users']});
+    const user = await this.userRepository.findOne({ where: { username: addUserToRoomDto.username}});
 
-    if (!room || !user) {
-      throw new NotFoundException('Room or User not found');
+    if (!room) {
+      throw new RoomNotFoundException('Room not found');
     }
 
-    // Check if the user is already in the room
-    if (room.users.some(u => u.id === user.id)) {
+    if (!user) {
+      throw new UserNotFoundException('User not found');
+    }
+
+    const userInRoom = room.users.find((user) => user.username === addUserToRoomDto.username)
+    if (!!userInRoom){
       throw new BadRequestException('User is already in the room');
     }
 
     room.users.push(user);
     return await this.roomRepository.save(room);
+  }
+
+  async findByRoomname(roomName: string): Promise<Room | undefined> {
+    return await this.roomRepository.findOne({ where: { name: roomName } });
   }
 
 }

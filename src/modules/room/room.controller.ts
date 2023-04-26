@@ -12,12 +12,12 @@ export class RoomController {
     return await this.roomService.createRoom(createRoomDto);
   }
 
-  @Post(':roomId/addUser')
+  @Post(':roomName/addUser')
   async addUserToRoom(
-    @Param('roomId') roomId: string, 
+    @Param('roomName') roomName: string, 
     @Body() addUserToRoomDto: AddUserToRoomDto)
   {
-    return await this.roomService.addUserToRoom(roomId, addUserToRoomDto);
+    return await this.roomService.addUserToRoom(roomName, addUserToRoomDto);
   }
 
 }

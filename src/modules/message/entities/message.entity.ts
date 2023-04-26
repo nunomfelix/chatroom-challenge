@@ -8,7 +8,7 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Room } from '../../room/entities/room.entity';
 
-@Entity()
+@Entity('messages')
 export class Message {
   @PrimaryGeneratedColumn('uuid')
   id: string;

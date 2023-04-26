@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany
 } from 'typeorm';
 import { Message } from '../../message/entities/message.entity';
 import { User } from '../../user/entities/user.entity';
@@ -26,6 +27,6 @@ export class Room {
   @OneToMany(() => Message, (message) => message.room, { cascade: true })
   messages: Message[];
 
-  @OneToMany(() => User, (user) => user.room)
+  @ManyToMany(() => User, (user) => user.rooms)
   users: User[];
 }

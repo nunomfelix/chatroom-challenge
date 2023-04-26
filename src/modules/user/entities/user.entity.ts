@@ -6,11 +6,13 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable
 } from 'typeorm';
 import { Room } from '../../room/entities/room.entity';
 import { Message } from '../../message/entities/message.entity';
 
-@Entity("users")
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -21,8 +23,8 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
-  password: string;
+  // @Column()
+  // password: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -30,8 +32,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Room, (room) => room.users)
-  room: Room;
+  @ManyToMany(() => Room, (room) => room.users, { cascade: true})
+  @JoinTable()
+  rooms: Room[];
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
