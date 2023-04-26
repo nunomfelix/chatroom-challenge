@@ -17,6 +17,13 @@ export class RoomService {
   ) {}
 
   async createRoom(createRoomDto: CreateRoomDto): Promise<Room> {
+    const { name } = createRoomDto;
+    
+    const room = await this.roomRepository.findOne({ where: { name: name }});
+    if(!!room){
+      throw new BadRequestException('Room exists already');
+    }
+
     const newRoom = this.roomRepository.create(createRoomDto);
     return await this.roomRepository.save(newRoom);
   }

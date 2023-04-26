@@ -20,8 +20,9 @@ export class MessageService {
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
-    const room = await this.roomService.findByRoomname(createMessageDto.roomName);
-    const user = await this.userService.findByUsername(createMessageDto.userName);
+    const { roomName, userName, content } = createMessageDto;
+    const room = await this.roomService.findByRoomname(roomName);
+    const user = await this.userService.findByUsername(userName);
 
     if(!room){
       throw new RoomNotFoundException()
@@ -31,27 +32,35 @@ export class MessageService {
       throw new UserNotFoundException()
     }
 
-    const newMessage = this.messageRepository.create(createMessageDto);
+    const newMessage = this.messageRepository.create({
+      content,
+      room,
+      user
+    });
+    
     return await this.messageRepository.save(newMessage);
   }
 
   async getLatestMessages(roomName: string, limit: number = 10): Promise<Message[]> {
     const room = await this.roomService.findByRoomname(roomName);
-    
+
     if(!room) {
       throw new RoomNotFoundException()
     }
 
-    console.info('[getLatestMessages.messages]', await this.messageRepository.find({
-      where: { room },
-      order: { createdAt: 'DESC' },
-      take: limit
-    }))
-
-    return await this.messageRepository.find({
-      where: { room },
-      order: { createdAt: 'DESC' },
-      take: limit
-    })
+    return await this.messageRepository
+    .createQueryBuilder('message')
+    .select([
+      'message.id',
+      'message.content',
+      'message.createdAt',
+      'user.username AS "username"',
+    ])
+    .innerJoin('message.room', 'room')
+    .innerJoin('message.user', 'user')
+    .where('room.id = :roomId', { roomId: room.id })
+    .orderBy('message.createdAt', 'DESC')
+    .take(limit)
+    .getRawMany();
   }
 }
