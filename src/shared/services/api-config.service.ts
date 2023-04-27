@@ -53,6 +53,7 @@ export class ApiConfigService {
     const entities = [
       __dirname + '/../../modules/**/entities/*.entity{.ts,.js}'
     ];
+    
     const migrations = [__dirname + '/../../migrations/*{.ts,.js}'];
 
     return {
@@ -68,7 +69,7 @@ export class ApiConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       migrationsRun: true,
-      // synchronize: true,
+      //synchronize: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
     };
   }
