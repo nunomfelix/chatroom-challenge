@@ -20,6 +20,7 @@ describe('MessageService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MessageService,
+        RoomService,
         {
           provide: getRepositoryToken(Message),
           useClass: Repository,
@@ -43,6 +44,23 @@ describe('MessageService', () => {
     messageRepository = module.get<Repository<Message>>(getRepositoryToken(Message));
     roomService = module.get<RoomService>(RoomService);
     userService = module.get<UserService>(UserService);
+
+    const queryBuilder: Partial<SelectQueryBuilder<Message>> = {
+      select: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue(
+        [{
+        content: 'Hello, world!',
+        user: { id: "1", username: "user1"},
+        room: { id: "1", name: "test-room"}
+      },
+    ]),
+    };
+
+    jest.spyOn(messageRepository, 'createQueryBuilder').mockReturnValue(queryBuilder as SelectQueryBuilder<Message>);
   });
 
   describe('createMessage', () => {
@@ -125,7 +143,7 @@ describe('MessageService', () => {
     
         jest.spyOn(roomService, 'findByRoomname').mockResolvedValue(room);
         const result = await messageService.getLatestMessages(roomName, limit);
-    
+        
         expect(result).toEqual(expectedResult);
         expect(roomService.findByRoomname).toHaveBeenCalledWith(roomName);
       });
@@ -142,6 +160,4 @@ describe('MessageService', () => {
     });
     
   });
-
-  // ... other test suites ...
 });

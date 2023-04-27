@@ -7,6 +7,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { AddUserToRoomDto } from './dto/add-user-to-room.dto';
 import { BadRequestException } from '@nestjs/common';
+import { RoomNotFoundException, UserNotFoundException } from '../../core/exceptions';
 
 describe('RoomService', () => {
   let roomService: RoomService;
@@ -19,11 +20,17 @@ describe('RoomService', () => {
         RoomService,
         {
           provide: getRepositoryToken(Room),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+            save: jest.fn(),
+            create: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(User),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -89,7 +96,7 @@ describe('RoomService', () => {
 
       jest.spyOn(roomRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(roomService.addUserToRoom(roomName, addUserDto)).rejects.toThrowError('Room not found');
+      await expect(roomService.addUserToRoom(roomName, addUserDto)).rejects.toThrow(RoomNotFoundException);
     });
 
     it('should throw an error if the user is not found', async () => {
@@ -102,7 +109,7 @@ describe('RoomService', () => {
       jest.spyOn(roomRepository, 'findOne').mockResolvedValue(room);
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(roomService.addUserToRoom(roomName, addUserDto)).rejects.toThrowError('User not found');
+      await expect(roomService.addUserToRoom(roomName, addUserDto)).rejects.toThrow(UserNotFoundException);
     });
 
     it('should throw an error if the user is already in the room', async () => {
