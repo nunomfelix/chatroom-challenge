@@ -25,6 +25,13 @@ To install the dependencies, run:
 
 Before start install PostgreSQL and fill correct configurations in .env file
 ```bash
+#if you are using docker
+DB_HOST=database
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=colkie
+#else 
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
