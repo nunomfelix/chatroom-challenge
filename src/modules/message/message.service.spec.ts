@@ -152,7 +152,7 @@ describe('MessageService', () => {
         const roomName = 'test-room';
         const limit = 5;
     
-        jest.spyOn(roomService, 'findByRoomname').mockResolvedValue(null);
+        jest.spyOn(roomService, 'findByRoomname').mockResolvedValue(undefined);
     
         await expect(messageService.getLatestMessages(roomName, limit)).rejects.toThrow(RoomNotFoundException);
         expect(roomService.findByRoomname).toHaveBeenCalledWith(roomName);
